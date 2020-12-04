@@ -81,13 +81,21 @@ export default class App extends React.PureComponent {
         let path = _this.ztree.getSelectedFiles().filePath;
         inifiles[path].code = cur_code;
         console.log("你按下了ctrl+s", cur_code);
-        //_this.props.configure.saveValue(cur_code)
         oEvent.preventDefault();
       }
     }
   }
+  readFile(filepath) {
+    return new Promise((resolve, reject) => {
+      if (1 < 2) {
+        resolve(inifiles[filepath].code)
+      } else {
+        reject("error")
+      }
+    })
+  }
   tabClick = (tab) => {
-    console.log("sd", this.ztree.getSelectedFiles())
+    //console.log("sd", this.ztree.getSelectedFiles())
     this.ztree.selectFile(tab.id);
     return new Promise((resolve, reject) => {
       if (1 < 2) {
@@ -115,18 +123,19 @@ export default class App extends React.PureComponent {
   addFile = (parentFolder, newFile) => {
     console.log("APP configure file _source", newFile)
     console.log("APP configure parentNode是：", parentFolder)
-    var tab = {
-      id: newFile.tId,
-      name: newFile.filename,
-      value: "new file"
-    };
-    this.tab_control.openInTab(tab);
     var file = {
       [newFile.filePath]: {
-        code: tab.value
+        code: "tab.value"
       }
     };
     Object.assign(inifiles, file)
+    var tab = {
+      id: newFile.tId,
+      name: newFile.filename,
+      filepath:newFile.filePath
+    };
+    this.tab_control.openInTab(tab);
+    
     return new Promise((resolve, reject) => {
       //let num = Math.round(Math.random() * 10);
       if (1 < 2) {
@@ -194,7 +203,7 @@ export default class App extends React.PureComponent {
       var tab = {
         id: fileNode.tId,
         name: fileNode.filename,
-        value: inifiles[fileNode.filePath].code
+        filepath: fileNode.filePath
       }
       var tabs = [...this.state.tabs]
       tabs.push(tab)
@@ -243,6 +252,7 @@ export default class App extends React.PureComponent {
         />
         <TabsControl
           tabs={this.state.tabs}
+          readFile={this.readFile}
           onRef={(ref) => { this.tab_control = ref; }}
           configure={tab_configure}
         />

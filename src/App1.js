@@ -1,10 +1,10 @@
+//不依赖本地文件，自定义文件树节点
 import React from 'react'
 import TabsControl from 'tab-code-editor'
 import Ztree from 'file-ztree'
-import Terminal from './Terminal'
+import Terminal from 'react-terminal1'
 import './globalstyles.css'
 
-//this.monacoInstance.layout({width:11,height:22})
 const filetree = [
   {
     filename: "pNode0 1",
@@ -43,7 +43,6 @@ const filetree = [
     isFolder: false,
   }
 ]
-//const filetree = file.geFileList(OPENDIR)
 var inifiles = { //左侧文件树内容
     '/pNode0 1/pNode1 1/sNode11 1.js': {
         code: "document.body.innerHTML = `<div>sNode 111.js</div>`",
@@ -313,20 +312,7 @@ export default class App extends React.PureComponent {
                         theme="vs-dark"
                     />
                     {/* <Terminal host="localhost:8080" /> */}
-                    <Terminal host="localhost:8080" show={this.state.isShowTerminal} />
-                    {/* <div id="terminal-container"
-            style={this.state.isShowTerminal ? { visibility: "visible" } : { visibility: "hidden" }}
-            onMouseDown={event => {
-              this.handleOnMouseDown(event)
-            }}
-          >
-            <div className="showBtn">
-              <span onClick={() => {
-                this.setState({ isShowTerminal: false })
-              }}> 关闭终端 </span>
-            </div>
-            <Terminal host="localhost:8080" />
-          </div> */}
+                    <Terminal host="localhost:8080" />
                 </div>
             </div>
         );

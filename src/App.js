@@ -1,70 +1,13 @@
+//根据本地文件目录生成文件树节点
 import React from 'react'
 import TabsControl from 'tab-code-editor'
 import Ztree from 'file-ztree'
-import Terminal from './Terminal'
+import Terminal from 'react-terminal1'
 import './globalstyles.css'
 
 const file = window.file
-const OPENDIR = 'E:/workspace/sandpack/tab-editor-test/src'
-// const filetree = [
-//   {
-//     filename: "pNode0 1",
-//     isFolder: true,
-//     extend: true,
-//     subdirectory: [
-//       {
-//         filename: "pNode1 1",
-//         isFolder: true,
-//         extend: false,
-//         subdirectory: [
-//           {
-//             filename: "sNode11 1.js",
-//             isFolder: false,
-//           },
-//           {
-//             filename: "sNode11 2.html",
-//             isFolder: false,
-//           },
-//           {
-//             filename: "sNode11 3.css",
-//             isFolder: false,
-//           }
-//         ]
-//       }
-//     ]
-//   },
-//   {
-//     filename: "pNode0 2",
-//     isFolder: true,
-//     extend: false,
-//     subdirectory: []
-//   },
-//   {
-//     filename: "sNode0 3.js",
-//     isFolder: false,
-//   }
-// ]
-const filetree = file.geFileList(OPENDIR)
-// var inifiles = { //左侧文件树内容
-//   '/pNode0 1/pNode1 1/sNode11 1.js': {
-//     code: "document.body.innerHTML = `<div>sNode 111.js</div>`",
-//   },
-//   '/pNode0 1/pNode1 1/sNode11 2.js': {
-//     code: "document.body.innerHTML = `<div>sNode 112.js</div>`",
-//   },
-//   '/pNode0 1/pNode1 1/sNode11 2.html': {
-//     code: "document.body.innerHTML = `<div>sNode 112.html</div>`",
-//   },
-//   '/pNode0 1/pNode1 1/sNode11 3.css': {
-//     code: "document.body.innerHTML = `<div>sNode 113.css</div>`",
-//   },
-//   '/sNode0 3.js': {
-//     code: "document.body.innerHTML = `<div>/sNode0 3.js</div>`",
-//   },
-//   '/sNode0 4.js': {
-//     code: "document.body.innerHTML = `<div>/sNode0 3.js</div>`",
-//   }
-// };
+const OPENDIR = 'E:/workspace/sandpack/tab-editor-test/src' //指定打开的文件目录
+const filetree = file.geFileList(OPENDIR) //生成指定目录的文件树节点
 export default class App extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -81,8 +24,8 @@ export default class App extends React.PureComponent {
       if (_this.tab_control.monaco.current) {
         _this.tab_control.monaco.current.editor.layout()
       }
-      if (_this.terminal.fitAddon) {
-        _this.terminal.fitAddon.fit()
+      if (_this.terminal) {
+        _this.terminal.layout()
       }
     }
     document.onkeydown = function () {
@@ -180,8 +123,8 @@ export default class App extends React.PureComponent {
       if (_this.tab_control.monaco.current) {
         _this.tab_control.monaco.current.editor.layout()
       }
-      if (_this.terminal.fitAddon) {
-         _this.terminal.fitAddon.fit()
+      if (_this.terminal) {
+         _this.terminal.layout()
       }
     }
     document.onmouseup = function () {
@@ -219,8 +162,6 @@ export default class App extends React.PureComponent {
       this.ztree.selectFile(active_tab.id);
     }
     return new Promise((resolve, reject) => {
-      //this.tab_control.openInTab && this.tab_control.openInTab(tab)
-      //window.confirm("sf")
       if (1 < 2) {
         resolve()
       } else {
@@ -380,12 +321,15 @@ export default class App extends React.PureComponent {
             onMouseDown={event => { this.verticalResize(event, 200, 800) }}
             style={this.state.isShowTerminal ? { visibility: "visible" } : { visibility: "hidden" }} 
           ></div>
-          {/* <Terminal host="localhost:8080" /> */}
-          <Terminal host="localhost:8080"
-            show={this.state.isShowTerminal}
-            onRef={(ref) => { this.terminal = ref; }}
-            closeTerminal={this.closeTerminal}
-          />
+           <div id="terminal-container"
+            style={this.state.isShowTerminal ? { visibility: "visible" } : { visibility: "hidden" }} >
+              <div className="showBtn">
+                  <span onClick={() => {
+                      this.closeTerminal()
+                  }}> 关闭终端 </span>
+              </div>
+              <Terminal host="localhost:8080" onRef={(ref) => { this.terminal = ref; }} />
+            </div>
           </div>
       </div>
     );

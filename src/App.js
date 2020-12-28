@@ -123,9 +123,7 @@ export default class App extends React.PureComponent {
       if (_this.tab_control.monaco.current) {
         _this.tab_control.monaco.current.editor.layout()
       }
-      if (_this.terminal) {
-         _this.terminal.layout()
-      }
+      _this.terminal.layout()
     }
     document.onmouseup = function () {
       document.onmousemove = null

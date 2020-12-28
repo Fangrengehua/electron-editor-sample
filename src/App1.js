@@ -2,7 +2,8 @@
 import React from 'react'
 import TabsControl from 'tab-code-editor'
 import Ztree from 'file-ztree'
-import Terminal from 'react-terminal1'
+import Terminal from './Terminal'
+// import Terminal from 'react-terminal1'
 import './globalstyles.css'
 
 const filetree = [
@@ -74,64 +75,129 @@ export default class App extends React.PureComponent {
     }
     componentDidMount() {
         const _this = this;
+        //_this.terminal.layout()
+        //console.log(_this.terminal.current)
+        window.onresize = function () {
+            if (_this.tab_control.monaco.current) {
+                _this.tab_control.monaco.current.editor.layout()
+            }
+            if (_this.terminal) {
+                // _this.terminal.fitAddon.fit()
+                _this.terminal.layout()
+            }
+        }
         document.onkeydown = function () {
             var oEvent = window.event;
             if (oEvent.keyCode === 83 && oEvent.ctrlKey) {  //ctrl+s
                 let cur_code = _this.tab_control.getValue();
                 let path = _this.ztree.getSelectedFiles().filePath;
-                //file.writeFile(OPENDIR + path, cur_code)
                 inifiles[path].code = cur_code;
-                console.log("你按下了ctrl+s", cur_code);
+                //console.log("你按下了ctrl+s", cur_code);
                 oEvent.preventDefault();
             }
             if (oEvent.keyCode === 192 && oEvent.ctrlKey) {
-                if (_this.state.isShowTerminal) {
+                if (_this.state.isShowTerminal) { //显示
                     _this.setState({ isShowTerminal: false })
-                } else {
+                } else { //关闭
+                    //var topDiv = document.querySelector('.tabsControl')
+                    //topDiv.style.bottom = 0 + 'px'
                     _this.setState({ isShowTerminal: true })
                 }
                 oEvent.preventDefault();
             }
         }
     }
-    handleOnMouseDown(e) {
-        var targetDiv = document.getElementById('terminal-container')
-        var xtermDiv = document.querySelector(".xterm-screen")
-        // var tabsDiv = document.querySelector(".tabsControl")
-        var targetDivHeight = targetDiv.offsetHeight
+    horizontalResize(e, minWidth, maxWidth) {
+        var leftDiv = document.getElementById('tree')
+        var hResizeDiv = document.querySelector('.h-resize')
+        var rightDiv = document.querySelector('.right')
+        var leftDivWidth = leftDiv.offsetWidth
+        const _this = this
+        var startX = e.clientX
+        document.onmousemove = function (e) {
+            e.preventDefault()
+            var distX = Math.abs(e.clientX - startX)
+            if (e.clientX > startX) {
+                leftDiv.style.width = leftDivWidth + distX + 'px'
+                hResizeDiv.style.left = leftDivWidth + distX + 'px'
+                rightDiv.style.marginLeft = leftDivWidth + distX + 2 + 'px'
+            }
+            if (e.clientX < startX) {
+                leftDiv.style.width = (leftDivWidth - distX) + 'px'
+                hResizeDiv.style.left = (leftDivWidth - distX) + 'px'
+                rightDiv.style.marginLeft = (leftDivWidth - distX) + 2 + 'px'
+            }
+            // 最大高度，也可以通过css  max-height设置
+            if (parseInt(leftDiv.style.width) >= maxWidth) {
+                leftDiv.style.width = maxWidth + 'px'
+                hResizeDiv.style.left = maxWidth + 'px'
+                rightDiv.style.marginLeft = maxWidth + 2 + 'px'
+            }
+            if (parseInt(leftDiv.style.width) <= minWidth) {
+                leftDiv.style.width = minWidth + 'px'
+                hResizeDiv.style.left = minWidth + 'px'
+                rightDiv.style.marginLeft = minWidth + 2 + 'px'
+            }
+            if (_this.tab_control.monaco.current) {
+                _this.tab_control.monaco.current.editor.layout()
+            }
+        }
+        document.onmouseup = function () {
+            document.onmousemove = null
+        }
+    }
+    verticalResize(e, minHeight, maxHeight) {
+        const _this = this;
+        //var topDiv = document.querySelector('.tabsControl')
+        var bottomDiv = document.getElementById('terminal-container')
+        var vResizeDiv = document.querySelector('.v-resize')
+        var bottomDivHeight = bottomDiv.offsetHeight
 
         var startY = e.clientY
         document.onmousemove = function (e) {
             e.preventDefault()
             var distY = Math.abs(e.clientY - startY)
             if (e.clientY < startY) {
-                targetDiv.style.height = targetDivHeight + distY + 'px'
-                xtermDiv.style.height = targetDiv.style.height
-                // tabsDiv.style.height = document.body.offsetHeight - (targetDivHeight + distY)+'px'
+                bottomDiv.style.height = bottomDivHeight + distY + 'px'
+                vResizeDiv.style.bottom = bottomDivHeight + distY + 'px'
+                //topDiv.style.bottom = bottomDivHeight + distY +2+ 'px'
             }
             if (e.clientY > startY) {
-                targetDiv.style.height = (targetDivHeight - distY) + 'px'
-                xtermDiv.style.height = targetDiv.style.height
-                // tabsDiv.style.height = document.body.offsetHeight + (targetDivHeight - distY)+'px'
+                bottomDiv.style.height = (bottomDivHeight - distY) + 'px'
+                vResizeDiv.style.bottom = (bottomDivHeight - distY) + 'px'
+                //topDiv.style.bottom = (bottomDivHeight - distY) + 2 + 'px'
             }
             // 最大高度，也可以通过css  max-height设置
-            if (parseInt(targetDiv.style.height) >= 700) {
-                targetDiv.style.height = 700 + 'px'
-                xtermDiv.style.height = 700 + 'px'
+            if (parseInt(bottomDiv.style.height) >= maxHeight) {
+                bottomDiv.style.height = maxHeight + 'px'
+                vResizeDiv.style.bottom = maxHeight + 'px'
             }
+            if (parseInt(bottomDiv.style.height) <= minHeight) {
+                bottomDiv.style.height = minHeight + 'px'
+                vResizeDiv.style.bottom = minHeight + 'px'
+            }
+            //resize code-deitor and terminal
+            if (_this.tab_control.monaco.current) {
+                _this.tab_control.monaco.current.editor.layout()
+            }
+            // console.log(_this.terminal)
+            // if (_this.terminal.current) {
+                 _this.terminal.layout()
+            // }
         }
         document.onmouseup = function () {
             document.onmousemove = null
         }
-
     }
-
+    closeTerminal() {
+        document.getElementById('terminal-container').style.visibility = 'hidden'
+        document.querySelector('.v-resize').style.visibility = 'hidden'
+    }
     readFile(filepath) {
         return new Promise((resolve, reject) => {
             if (1 < 2) {
-                // let code = file.readFile(OPENDIR + filepath)
-                // resolve(code)
-                resolve(inifiles[filepath].code)
+                let code = inifiles[filepath].code
+                resolve(code)
             } else {
                 reject("error")
             }
@@ -154,8 +220,6 @@ export default class App extends React.PureComponent {
             this.ztree.selectFile(active_tab.id);
         }
         return new Promise((resolve, reject) => {
-            //this.tab_control.openInTab && this.tab_control.openInTab(tab)
-            //window.confirm("sf")
             if (1 < 2) {
                 resolve()
             } else {
@@ -172,7 +236,6 @@ export default class App extends React.PureComponent {
           }
         };
         Object.assign(inifiles, file)
-        //file.writeFile(OPENDIR + newFile.filePath, '')
         var tab = {
             id: newFile.tId,
             name: newFile.filename,
@@ -192,7 +255,6 @@ export default class App extends React.PureComponent {
     addFolder = (parentFolder, newFolder) => {
         console.log("APP configure folder _source", newFolder)
         console.log("APP configure parentNode是：", parentFolder)
-        //file.mkdir(OPENDIR + newFolder.filePath)
         return new Promise((resolve, reject) => {
             if (1 < 2) {
                 resolve();
@@ -205,9 +267,8 @@ export default class App extends React.PureComponent {
         console.log("APP configure rename _source:", afterFile)
         console.log("APP configure rename oldsource", beforeFile);
 
-        // let oldpath = OPENDIR + beforeFile.filePath
-        // let newpath = OPENDIR + afterFile.filePath
-        // file.renameFile(oldpath, newpath)
+        let oldpath = beforeFile.filePath
+        let newpath = afterFile.filePath
 
         var tabs = this.state.tabs
         for (let i = 0; i < tabs.length; i++) {
@@ -229,12 +290,7 @@ export default class App extends React.PureComponent {
     remove = (fileNode) => {
         //console.log("APP remove _source", fileNode);
         var tabs = this.state.tabs
-        // if (fileNode.isFolder) {
-        //     file.deleteFolder(OPENDIR + fileNode.filePath)
-        // }
-        // else {
-        //     file.deleteFile(OPENDIR + fileNode.filePath)
-        // }
+        
 
         for (let i = 0; i < tabs.length; i++) {
             if (tabs[i].id === fileNode.tId) {
@@ -301,8 +357,8 @@ export default class App extends React.PureComponent {
                     configure={configure}
                     filetree={filetree}
                     onRef={(ref) => { this.ztree = ref; }}
-                // ref={this.ztree}
                 />
+                <div className="h-resize" onMouseDown={event => { this.horizontalResize(event, 250, 700) }}></div>
                 <div className="right">
                     <TabsControl
                         tabs={this.state.tabs}
@@ -311,8 +367,19 @@ export default class App extends React.PureComponent {
                         configure={tab_configure}
                         theme="vs-dark"
                     />
-                    {/* <Terminal host="localhost:8080" /> */}
-                    <Terminal host="localhost:8080" />
+                    <div className="v-resize"
+                        onMouseDown={event => { this.verticalResize(event, 200, 800) }}
+                        style={this.state.isShowTerminal ? { visibility: "visible" } : { visibility: "hidden" }}
+                    ></div>
+                    <div id="terminal-container"
+                        style={this.state.isShowTerminal ? { visibility: "visible" } : { visibility: "hidden" }} >
+                        <div className="showBtn">
+                            <span onClick={() => {
+                                this.closeTerminal()
+                            }}> 关闭终端 </span>
+                        </div>
+                        <Terminal host="localhost:8080" onRef={(ref) => { this.terminal = ref; }} />
+                    </div>
                 </div>
             </div>
         );

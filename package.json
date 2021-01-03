@@ -84,7 +84,7 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "electron-start": "electron ."
+    "electron": "node ./node_modules/electron/cli.js ."
   },
   "eslintConfig": {
     "extends": [

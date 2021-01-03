@@ -2,8 +2,8 @@
 import React from 'react'
 import TabsControl from 'tab-code-editor'
 import Ztree from 'file-ztree'
-import Terminal from './Terminal'
-// import Terminal from 'react-terminal1'
+//import Terminal from './Terminal'
+import Terminal from 'react-terminal1'
 import './globalstyles.css'
 
 const filetree = [

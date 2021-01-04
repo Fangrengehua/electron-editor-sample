@@ -113,6 +113,7 @@ export default class App extends React.PureComponent {
         var rightDiv = document.querySelector('.right')
         var leftDivWidth = leftDiv.offsetWidth
         const _this = this
+        const screenWidth = document.body.offsetWidth
         var startX = e.clientX
         document.onmousemove = function (e) {
             e.preventDefault()
@@ -120,23 +121,27 @@ export default class App extends React.PureComponent {
             if (e.clientX > startX) {
                 leftDiv.style.width = leftDivWidth + distX + 'px'
                 hResizeDiv.style.left = leftDivWidth + distX + 'px'
-                rightDiv.style.marginLeft = leftDivWidth + distX + 2 + 'px'
+                rightDiv.style.left = leftDivWidth + distX + 2 + 'px'
+                rightDiv.style.width = screenWidth-(leftDivWidth + distX + 2) + 'px'
             }
             if (e.clientX < startX) {
                 leftDiv.style.width = (leftDivWidth - distX) + 'px'
                 hResizeDiv.style.left = (leftDivWidth - distX) + 'px'
-                rightDiv.style.marginLeft = (leftDivWidth - distX) + 2 + 'px'
+                rightDiv.style.left = leftDivWidth - distX + 'px'
+                rightDiv.style.width = screenWidth-(leftDivWidth - distX + 2) + 'px'
             }
             // 最大高度，也可以通过css  max-height设置
             if (parseInt(leftDiv.style.width) >= maxWidth) {
                 leftDiv.style.width = maxWidth + 'px'
                 hResizeDiv.style.left = maxWidth + 'px'
-                rightDiv.style.marginLeft = maxWidth + 2 + 'px'
+                rightDiv.style.left = maxWidth + 'px'
+                rightDiv.style.width = screenWidth - (maxWidth + 2) + 'px'
             }
             if (parseInt(leftDiv.style.width) <= minWidth) {
                 leftDiv.style.width = minWidth + 'px'
                 hResizeDiv.style.left = minWidth + 'px'
-                rightDiv.style.marginLeft = minWidth + 2 + 'px'
+                rightDiv.style.left = minWidth + 'px'
+                rightDiv.style.width = screenWidth - (minWidth + 2) + 'px'
             }
             if (_this.tab_control.monaco.current) {
                 _this.tab_control.monaco.current.editor.layout()

@@ -63,23 +63,23 @@ export default class App extends React.PureComponent {
       if (e.clientX > startX) {
         leftDiv.style.width = leftDivWidth + distX + 'px'
         hResizeDiv.style.left = leftDivWidth + distX + 'px'
-        rightDiv.style.marginLeft = leftDivWidth + distX + 2 + 'px'
+        rightDiv.style.left = leftDivWidth + distX + 2 + 'px'
       }
       if (e.clientX < startX) {
         leftDiv.style.width = (leftDivWidth - distX) + 'px'
         hResizeDiv.style.left = (leftDivWidth - distX) + 'px'
-        rightDiv.style.marginLeft = (leftDivWidth - distX) + 2 + 'px'
+        rightDiv.style.left = (leftDivWidth - distX) + 2 + 'px'
       }
       // 最大高度，也可以通过css  max-height设置
       if (parseInt(leftDiv.style.width) >= maxWidth) {
         leftDiv.style.width = maxWidth + 'px'
         hResizeDiv.style.left = maxWidth + 'px'
-        rightDiv.style.marginLeft = maxWidth+2 + 'px'
+        rightDiv.style.left = maxWidth+2 + 'px'
       }
       if (parseInt(leftDiv.style.width) <= minWidth) {
         leftDiv.style.width = minWidth + 'px'
         hResizeDiv.style.left = minWidth + 'px'
-        rightDiv.style.marginLeft = minWidth+2 + 'px'
+        rightDiv.style.left = minWidth+2 + 'px'
       }
       if (_this.tab_control.monaco.current) {
         _this.tab_control.monaco.current.editor.layout()

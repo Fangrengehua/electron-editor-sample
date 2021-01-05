@@ -205,31 +205,60 @@ export default class App extends React.PureComponent {
       }
     })
   }
-  rename = (beforeFile, afterFile) => {
-    console.log("APP configure rename _source:", afterFile)
-    console.log("APP configure rename oldsource", beforeFile);
+  // rename = (beforeFile, afterFile) => {
+  //   console.log("APP configure rename _source:", afterFile)
+  //   console.log("APP configure rename oldsource", beforeFile);
 
+  //   let oldpath = OPENDIR + beforeFile.filePath
+  //   let newpath = OPENDIR + afterFile.filePath
+  //   file.renameFile(oldpath, newpath)
+    
+  //   var tabs = this.state.tabs
+  //   var index;
+  //   for (let i = 0; i < tabs.length; i++) {
+  //     if (tabs[i].id === afterFile.tId) {
+  //       tabs[i].name = afterFile.filename;
+  //       //tabs[i].filepath = afterFile.filePath;
+  //       this.tab_control.tabReset(afterFile.filename, i)
+  //       index = i;
+  //       break;
+  //     }
+  //   }
+  //   return new Promise((resolve, reject) => {
+  //     //let num = Math.round(Math.random() * 10);
+  //     if (1 < 2) {
+  //       resolve();
+  //     } else {
+  //       reject();
+  //     }
+  //   })
+  // }
+  rename=(beforeFile, afterFile) => {
+    var tabs = this.state.tabs
+    var index;
+    for (let i = 0; i < tabs.length; i++) {
+        if (tabs[i].id === afterFile.tId) {
+            tabs[i].name = afterFile.filename;
+            //tabs[i].filepath = afterFile.filePath;
+            this.tab_control.tabReset(afterFile.filename, i)
+            index = i;
+            break;
+        }
+    }
     let oldpath = OPENDIR + beforeFile.filePath
     let newpath = OPENDIR + afterFile.filePath
     file.renameFile(oldpath, newpath)
     
-    var tabs = this.state.tabs
-    for (let i = 0; i < tabs.length; i++) {
-      if (tabs[i].id === afterFile.tId) {
-        tabs[i].name = afterFile.filename;
-        this.tab_control.tabReset(tabs[i])
-        break;
-      }
-    }
     return new Promise((resolve, reject) => {
-      //let num = Math.round(Math.random() * 10);
-      if (1 < 2) {
-        resolve();
-      } else {
-        reject();
-      }
+        //let num = Math.round(Math.random() * 10);
+        if (1 < 2) {
+            resolve();
+        } else {
+            reject();
+        }
     })
-  }
+}
+
   remove = (fileNode) => {
     //console.log("APP remove _source", fileNode);
     var tabs = this.state.tabs

@@ -182,7 +182,8 @@ export default class App extends React.PureComponent {
       name: newFile.filename,
       filepath:newFile.filePath
     };
-    this.tab_control.openInTab(tab);
+    var tabs = this.tab_control.openInTab(tab);
+    this.setState({ tabs: tabs })
     
     return new Promise((resolve, reject) => {
       //let num = Math.round(Math.random() * 10);
@@ -235,13 +236,12 @@ export default class App extends React.PureComponent {
   // }
   rename=(beforeFile, afterFile) => {
     var tabs = this.state.tabs
-    var index;
     for (let i = 0; i < tabs.length; i++) {
         if (tabs[i].id === afterFile.tId) {
             tabs[i].name = afterFile.filename;
-            //tabs[i].filepath = afterFile.filePath;
-            this.tab_control.tabReset(afterFile.filename, i)
-            index = i;
+            tabs[i].filepath = afterFile.filePath;
+            tabs = this.tab_control.tabReset(tabs[i])
+            this.setState({tabs:tabs})
             break;
         }
     }
@@ -271,7 +271,8 @@ export default class App extends React.PureComponent {
     
     for (let i = 0; i < tabs.length; i++) {
       if (tabs[i].id === fileNode.tId) {
-        this.tab_control.tabClose(tabs[i])
+        tabs = this.tab_control.tabClose(tabs[i])
+        this.setState({ tabs: tabs })
         break;
       }
     }
@@ -292,9 +293,9 @@ export default class App extends React.PureComponent {
         filepath: fileNode.filePath
       }
       var tabs = [...this.state.tabs]
-      tabs.push(tab)
+      //tabs.push(tab)
+      tabs = this.tab_control.openInTab(tab)
       this.setState({ tabs: tabs })
-      this.tab_control.openInTab(tab)
     }
     return new Promise((resolve, reject) => {
       if (1 < 2) {
